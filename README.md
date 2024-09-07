@@ -5,6 +5,9 @@ This project is a dashboard to monitor Ethereum (ETH) and Fetch.ai (FET) balance
 
 The dashboard retrieves real-time data from the Ethereum blockchain and Fetch.ai using Infura and displays balances and their corresponding USD values.
 
+## Example
+
+![Demo Image](./demo-login.png)
 
 ![Demo Image](./demo.png)
 
@@ -87,6 +90,12 @@ You can manage the application using **PM2** for production, but here are the mo
     pm2 restart balances-dashboard
     ```
 
+- **Stop the Application:**
+
+    ```bash
+    pm2 stop balances-dashboard
+    ```
+
 - **Delete the Application from PM2:**
 
     ```bash
@@ -101,7 +110,7 @@ You can manage the application using **PM2** for production, but here are the mo
 ├── views/                  # HTML templates for the dashboard and login page
 ├── .env                    # Environment variables (Not included in GitHub)
 ├── .env.example            # Example environment file for users
-├── server.js               # Main server file using Express
+├── app.js                  # Main server file using Express
 ├── package.json            # Project metadata and dependencies
 └── README.md               # Project documentation
 ```
