@@ -1,0 +1,71 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #746d6d;
+    color: #d4d4d4;
+    margin: 0;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+p.lead {
+    font-size: 1.1rem;
+    color: #746d6d;
+}
+
+.card-body h2 {
+    font-weight: bold;
+    margin: 0;
+}
+
+.table th {
+    cursor: pointer;
+    user-select: none;
+}
+
+.table th:hover {
+    background-color: #746d6d;
+}
+
+.progress-bar {
+    font-size: 0.9rem;
+    padding: 0;
+}
+
+i.bi-clipboard-fill,
+i.bi-box-arrow-up-right {
+    cursor: pointer;
+}
+
+i.bi-clipboard-fill:hover,
+i.bi-box-arrow-up-right:hover {
+    color: #007bff;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #746d6d;
+}
+
+#complete-message {
+    color: #a9a9a9 !important; 
+    background-color: transparent;
+    display: none;
+}
+
+.ocean-nodes-section {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+}
+
+.ocean-nodes-section img {
+    vertical-align: middle; 
+    margin-left: 10px;
+}
+
+.ocean-nodes-section h5,
+.ocean-nodes-section p {
+    color: #fff;
+}
