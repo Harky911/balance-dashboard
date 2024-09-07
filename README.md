@@ -29,7 +29,7 @@ Before you start, make sure you have the following:
 
 ```bash
 git clone https://github.com/Harky911/balance-dashboard.git
-cd balances
+cd balances-dashboard
 ```
 
 ### Step 2: Install Dependencies
