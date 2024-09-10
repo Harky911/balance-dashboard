@@ -11,6 +11,3 @@ npm-debug.log*
 
 # Mac system files
 .DS_Store
-
-# Ignore data
-rewardsData.json
