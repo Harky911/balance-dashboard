@@ -1,5 +1,6 @@
 const express = require('express');
 const { ethers } = require('ethers');
+const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const session = require('express-session');
@@ -8,6 +9,8 @@ const bcrypt = require('bcrypt');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 dotenv.config();
+
+require('./fetchRewards');
 
 const app = express();
 
@@ -99,9 +102,25 @@ async function getEthBalance(privateKey) {
   }
 }
 
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / (24 * 60 * 60));
+  const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+  const minutes = Math.floor((seconds % (60 * 60)) / 60);
+  return `${days}d ${hours}h ${minutes}m`;
+}
 
 app.get('/balance-updates', async (req, res) => {
   const { ethPriceUsd, fetPriceUsd } = await fetchPrices();
+  
+  const rewardsFilePath = path.join(__dirname, 'rewardsData.json');
+  let rewardsData = { lastReward: [], nextReward: [] };
+
+  try {
+    const rawData = fs.readFileSync(rewardsFilePath, 'utf8');
+    rewardsData = JSON.parse(rawData);
+  } catch (error) {
+    console.error('Error reading rewardsData.json:', error);
+  }
   
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -120,20 +139,32 @@ app.get('/balance-updates', async (req, res) => {
     totalFetBalance += ethers.parseUnits(fetBalance, 18);
 
     completedKeys++;
-
     const percentage = Math.floor((completedKeys / totalKeys) * 100);
 
+    const wallet = new ethers.Wallet(privateKey);
+    const address = wallet.address;
+
+    const lastRewardEntry = rewardsData.lastReward.find(reward => reward.address === address);
+    const nextRewardEntry = rewardsData.nextReward.find(reward => reward.address === address);
+
     const data = {
-      address: new ethers.Wallet(privateKey).address,
-      eth: ethBalance,
-      fet: fetBalance,
+      address,
+      eth: parseFloat(ethBalance).toFixed(5),
+      fet: parseFloat(fetBalance).toFixed(2),
       ethUsd: (parseFloat(ethBalance) * ethPriceUsd).toFixed(2),
       fetUsd: (parseFloat(fetBalance) * fetPriceUsd).toFixed(2),
       percentage,
-      totalEth: ethers.formatEther(totalEthBalance),
-      totalFet: ethers.formatUnits(totalFetBalance, 18),
+      totalEth: parseFloat(ethers.formatEther(totalEthBalance)).toFixed(5),
+      totalFet: parseFloat(ethers.formatUnits(totalFetBalance, 18)).toFixed(2),
       totalEthUsd: (parseFloat(ethers.formatEther(totalEthBalance)) * ethPriceUsd).toFixed(2),
-      totalFetUsd: (parseFloat(ethers.formatUnits(totalFetBalance, 18)) * fetPriceUsd).toFixed(2)
+      totalFetUsd: (parseFloat(ethers.formatUnits(totalFetBalance, 18)) * fetPriceUsd).toFixed(2),
+      lastReward: lastRewardEntry ? lastRewardEntry.amount.toFixed(2) : 'N/A',
+      lastUptime: lastRewardEntry ? formatUptime(lastRewardEntry.uptime) : 'N/A',
+      nextReward: nextRewardEntry ? nextRewardEntry.amount.toFixed(2) : 'N/A',
+      currentUptime: nextRewardEntry ? formatUptime(nextRewardEntry.uptime) : 'N/A',
+      lastPosition: lastRewardEntry ? lastRewardEntry.index + 1 : 'N/A',
+      currentPosition: nextRewardEntry ? nextRewardEntry.index + 1 : 'N/A',
+      nodeID: lastRewardEntry ? lastRewardEntry.id : nextRewardEntry ? nextRewardEntry.id : 'N/A'
     };
 
     res.write(`data: ${JSON.stringify(data)}\n\n`);
@@ -143,7 +174,6 @@ app.get('/balance-updates', async (req, res) => {
   res.write('data: \n\n');
   res.end();
 });
-
 
 
 const PORT = process.env.PORT || 3000;

@@ -8,6 +8,7 @@
     <title>Balances Dashboard</title>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="/styles.css" />
 </head>
 
@@ -20,14 +21,16 @@
                         <div class="card-body py-1">
                             <h5 class="text-white d-flex justify-content-center align-items-center mb-1">
                                 For Users of
-                                <img src="/images/logo_Nodes.svg" alt="Ocean Nodes" width="200" height="200" class="ms-2">
+                                <img src="/images/logo_Nodes.svg" alt="Ocean Nodes" width="200" height="200"
+                                    class="ms-2">
                             </h5>
                             <p class="small text-white mb-0">
                                 This dashboard helps users track their balances on Ethereum and Fetch.ai when using
-                                <a href="https://github.com/oceanprotocol/ocean-node" target="_blank" class="text-primary">
+                                <a href="https://github.com/oceanprotocol/ocean-node" target="_blank"
+                                    class="text-primary">
                                     Ocean Nodes
                                 </a>.
-                            </p>                            
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -35,55 +38,111 @@
         </section>
         <section class="text-center mb-4">
             <div class="row justify-content-center">
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <div class="card bg-light border mb-3 shadow-sm">
                         <div class="card-body py-3">
                             <h5 class="text-muted">Total ETH</h5>
-                            <h2 id="total-eth" class="text-primary">Loading...</h2>
+                            <h2 id="total-eth">Loading...</h2>
                             <p id="total-eth-usd" class="text-muted small">Loading...</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <div class="card bg-light border mb-3 shadow-sm">
                         <div class="card-body py-3">
                             <h5 class="text-muted">Total FET</h5>
-                            <h2 id="total-fet" class="text-success">Loading...</h2>
+                            <h2 id="total-fet">Loading...</h2>
                             <p id="total-fet-usd" class="text-muted small">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light border mb-3 shadow-sm">
+                        <div class="card-body py-3">
+                            <h5 class="text-muted">Last Rewards</h5>
+                            <h2 id="total-last-rewards">Loading...</h2>
+                            <p class="text-muted small">Sum of Last Rewards</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light border mb-3 shadow-sm">
+                        <div class="card-body py-3">
+                            <h5 class="text-muted">Next Rewards</h5>
+                            <h2 id="total-next-rewards">Loading...</h2>
+                            <p class="text-muted small">Sum of Next Rewards</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <section class="mb-4">
-            <div id="progress-container" class="progress mb-3">
+        <section class="text-center mb-4">
+            <div id="progress-container" class="progress">
                 <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                    role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%
+                    role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    0%
                 </div>
             </div>
-            <div id="complete-message" class="text-center text-muted" style="display: none;">
-                <h6><i class="bi bi-check-circle"></i> All balances fetched successfully!</h6>
+            <div id="complete-message" class="text-muted" style="display: none;">All balances fetched successfully!
             </div>
         </section>
+
+        <div class="dropdown mb-4">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="columnDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Columns
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="columnDropdown">
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="2" checked>
+                        ETH Balance</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="3" checked>
+                        ETH (USD)</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="4" checked>
+                        FET Balance</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="5" checked>
+                        FET (USD)</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="6" checked>
+                        Last Reward</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="7" checked>
+                        Last Uptime</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="8" checked>
+                        Next Reward</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="9" checked>
+                        Current Uptime</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="10" checked>
+                        Last Position</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="11" checked>
+                        Current Position</label></li>
+                <li><label class="dropdown-item"><input type="checkbox" class="toggle-column" data-column="12" checked>
+                        Node ID</label></li>
+            </ul>
+        </div>
 
         <section class="mb-5">
             <div class="card h-100 border-0">
                 <div class="card-body table-responsive" style="max-height: 500px; overflow-y: auto;">
-                    <table class="table table-borderless table-hover table-striped text-center align-middle sortable">
+                    <table id="balance-table"
+                        class="table table-borderless table-hover table-striped text-center align-middle sortable">
                         <thead class="table-light text-muted small">
                             <tr>
-                                <th onclick="sortTable(0)"># <i class="bi bi-chevron-expand"></i></th>
-                                <th onclick="sortTable(1)">Address <i class="bi bi-chevron-expand"></i></th>
-                                <th onclick="sortTable(2)">ETH Balance <i class="bi bi-chevron-expand"></i></th>
+                                <th>#</th>
+                                <th>Address</th>
+                                <th>ETH Balance</th>
                                 <th>ETH (USD)</th>
-                                <th onclick="sortTable(3)">FET Balance <i class="bi bi-chevron-expand"></i></th>
+                                <th>FET Balance</th>
                                 <th>FET (USD)</th>
+                                <th>Last Reward</th>
+                                <th>Last Uptime</th>
+                                <th>Next Reward</th>
+                                <th>Current Uptime</th>
+                                <th>Last Position</th>
+                                <th>Current Position</th>
+                                <th>Node ID</th>
                             </tr>
                         </thead>
                         <tbody id="balance-rows" class="small">
                             <tr>
-                                <td colspan="6">Loading balances...</td>
+                                <td colspan="13">Loading balances...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -91,89 +150,11 @@
             </div>
         </section>
     </div>
-
-    <script>
-        let indexCounter = 1;
-        function fetchBalances() {
-            const eventSource = new EventSource('/balance-updates');
-            const balanceRows = document.getElementById('balance-rows');
-            const progressBar = document.getElementById('progress-bar');
-            const progressContainer = document.getElementById('progress-container');
-            const completeMessage = document.getElementById('complete-message');
-
-            eventSource.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-            <td>${indexCounter++}</td>
-            <td>
-              ${data.address}
-              <i class="bi bi-clipboard-fill text-muted mx-2" style="cursor: pointer;" title="Copy Address" onclick="copyToClipboard('${data.address}')"></i>
-              <a href="https://etherscan.io/address/${data.address}" target="_blank" title="View on Etherscan">
-                <i class="bi bi-box-arrow-up-right text-muted"></i>
-              </a>
-            </td>
-            <td>${data.eth}</td>
-            <td>$${data.ethUsd}</td>
-            <td>${data.fet}</td>
-            <td>$${data.fetUsd}</td>
-          `;
-                balanceRows.appendChild(row);
-
-                document.getElementById('total-eth').textContent = data.totalEth;
-                document.getElementById('total-fet').textContent = data.totalFet;
-                document.getElementById('total-eth-usd').textContent = `$${data.totalEthUsd}`;
-                document.getElementById('total-fet-usd').textContent = `$${data.totalFetUsd}`;
-
-                progressBar.style.width = `${data.percentage}%`;
-                progressBar.setAttribute('aria-valuenow', data.percentage);
-                progressBar.textContent = `${data.percentage}%`;
-
-                if (data.percentage === 100) {
-                    progressBar.classList.remove('progress-bar-animated');
-                    setTimeout(() => {
-                        progressContainer.style.display = 'none';
-                        completeMessage.style.display = 'block';
-                        completeMessage.style.color = '#ffffff';
-                    }, 500);
-                }
-
-            };
-
-            eventSource.addEventListener('end', () => {
-                balanceRows.querySelector('tr:first-child').remove();
-                eventSource.close();
-            });
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Address copied to clipboard');
-            });
-        }
-
-        function sortTable(columnIndex) {
-            const table = document.querySelector('.sortable tbody');
-            const rows = Array.from(table.rows);
-            let isAscending = table.getAttribute('data-sort') === 'asc';
-
-            rows.sort((rowA, rowB) => {
-                const cellA = rowA.cells[columnIndex].innerText;
-                const cellB = rowB.cells[columnIndex].innerText;
-
-                const valueA = columnIndex > 0 ? parseFloat(cellA.replace(/[$,]/g, '')) : cellA;
-                const valueB = columnIndex > 0 ? parseFloat(cellB.replace(/[$,]/g, '')) : cellB;
-
-                return isAscending ? (valueA - valueB) : (valueB - valueA);
-            });
-
-            rows.forEach(row => table.appendChild(row));
-            table.setAttribute('data-sort', isAscending ? 'desc' : 'asc');
-        }
-
-        window.onload = fetchBalances;
-    </script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/node_modules/datatables.net/js/dataTables.min.js"></script>
+    <script src="/node_modules/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>

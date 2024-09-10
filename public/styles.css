@@ -39,11 +39,6 @@ i.bi-box-arrow-up-right {
     cursor: pointer;
 }
 
-i.bi-clipboard-fill:hover,
-i.bi-box-arrow-up-right:hover {
-    color: #007bff;
-}
-
 .table-hover tbody tr:hover {
     background-color: #746d6d;
 }
@@ -68,4 +63,19 @@ i.bi-box-arrow-up-right:hover {
 .ocean-nodes-section h5,
 .ocean-nodes-section p {
     color: #fff;
+}
+
+.page-link {
+    background-color: #343a40 !important;
+    color: var(--bs-light) !important;
+}
+
+.page-item.active .page-link {
+    background-color: #343a40 !important;
+    border-color: var(--bs-dark) !important;
+}
+
+.page-link:hover {
+    background-color: #414243 !important;
+    color: var(--bs-light) !important;
 }
