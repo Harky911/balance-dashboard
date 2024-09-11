@@ -61,10 +61,10 @@ app.get('/', (req, res) => {
 });
 
 const provider = new ethers.InfuraProvider('mainnet', process.env.INFURA_KEY);
-const privateKeys = [];
-let i = 1
-while (process.env[`PRIVATE_KEY_${i}`]) {
-  privateKeys.push(process.env[`PRIVATE_KEY_${i}`]);
+const addresses = [];
+let i = 1;
+while (process.env[`ADDRESS_${i}`]) {
+  addresses.push(process.env[`ADDRESS_${i}`]);
   i++;
 }
 
@@ -81,21 +81,19 @@ async function fetchPrices() {
   }
 }
 
-async function getFetBalance(privateKey) {
+async function getFetBalance(address) {
   try {
-    const wallet = new ethers.Wallet(privateKey, provider);
     const fetContract = new ethers.Contract(process.env.FET_CONTRACT_ADDRESS, ["function balanceOf(address owner) view returns (uint256)"], provider);
-    const balance = await fetContract.balanceOf(wallet.address);
+    const balance = await fetContract.balanceOf(address);
     return balance ? ethers.formatUnits(balance, 18) : '0.0';
   } catch (err) {
     return '0.0';
   }
 }
 
-async function getEthBalance(privateKey) {
+async function getEthBalance(address) {
   try {
-    const wallet = new ethers.Wallet(privateKey, provider);
-    const balance = await provider.getBalance(wallet.address);
+    const balance = await provider.getBalance(address);
     return balance ? ethers.formatEther(balance) : '0.0';
   } catch (err) {
     return '0.0';
@@ -126,23 +124,20 @@ app.get('/balance-updates', async (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  const totalKeys = privateKeys.length;
+  const totalAddresses = addresses.length;
   let totalEthBalance = 0n;
   let totalFetBalance = 0n;
-  let completedKeys = 0;
+  let completedAddresses = 0;
 
-  for (const privateKey of privateKeys) {
-    const ethBalance = await getEthBalance(privateKey);
-    const fetBalance = await getFetBalance(privateKey);
+  for (const address of addresses) {
+    const ethBalance = await getEthBalance(address);
+    const fetBalance = await getFetBalance(address);
 
     totalEthBalance += ethers.parseEther(ethBalance);
     totalFetBalance += ethers.parseUnits(fetBalance, 18);
 
-    completedKeys++;
-    const percentage = Math.floor((completedKeys / totalKeys) * 100);
-
-    const wallet = new ethers.Wallet(privateKey);
-    const address = wallet.address;
+    completedAddresses++;
+    const percentage = Math.floor((completedAddresses / totalAddresses) * 100);
 
     const lastRewardEntry = rewardsData.lastReward.find(reward => reward.address === address);
     const nextRewardEntry = rewardsData.nextReward.find(reward => reward.address === address);

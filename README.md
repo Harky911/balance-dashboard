@@ -1,7 +1,7 @@
 
 # Balances Dashboard
 
-This project is a dashboard to monitor Ethereum (ETH) and Fetch.ai (FET) balances across multiple accounts (keys). It was created in response to [Ocean Nodes](https://github.com/oceanprotocol/ocean-node) to help users easily monitor their balances while interacting with the nodes. 
+This project is a dashboard to monitor Ethereum (ETH) and Fetch.ai (FET) balances across multiple accounts. It was created in response to [Ocean Nodes](https://github.com/oceanprotocol/ocean-node) to help users easily monitor their balances while interacting with the nodes. 
 
 The dashboard retrieves real-time data from the Ethereum blockchain and Fetch.ai using Infura and displays balances and their corresponding USD values.
 
@@ -24,7 +24,7 @@ Before you start, make sure you have the following:
 
 - **Node.js** (v14.x or higher) and **npm** installed.
 - A free **Infura API Key** to connect to the Ethereum network.
-- **Private Ethereum keys** to track your accounts.
+- **Ethereum Addresses** to track your accounts.
 
 ## Installation
 
@@ -60,7 +60,7 @@ You'll need to set up your environment variables for the application to function
     - **PASSWORD**: The password for login.
     - **INFURA_KEY**: Your Infura API key (see step below on how to get one).
     - **FET_CONTRACT_ADDRESS**: This is already set to the correct Fetch.ai contract address.
-    - **PRIVATE_KEY_X**: Add your Ethereum private keys here to track balances.
+    - **ADDRESS_X**: Add your Ethereum addresses here to track balances.
 
 ### Step 4: Get an Infura API Key
 
@@ -82,7 +82,19 @@ This will start the application, and you can access it by navigating to `http://
 
 ### Step 6: PM2 Commands (Optional)
 
+- **Install PM2:**
+
+    ```bash
+    npm install -g pm2
+    ```
+
 You can manage the application using **PM2** for production, but here are the most common commands:
+
+- **Start the Application:**
+
+    ```bash
+    pm2 start app.js --name balances-dashboard
+    ```
 
 - **Restart the Application:**
 
